@@ -33,7 +33,7 @@
           Дата публикации: {{ post.pub_date|date:"d E Y" }}
             <a href="{% url 'posts:profile' post.author.username %}">все посты пользователя</a>
         </li>
-        </ul> 
+        </ul>
         <p>
           {% thumbnail post.image "960x390" crop="center" upscale=True as im %}
           <img class="card-img my-2" src="{{ im.url }}">

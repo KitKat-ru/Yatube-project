@@ -41,7 +41,7 @@ def post_detail(request, post_id):
     """Представление страницы отдельного поста."""
     template = 'posts/post_detail.html'
     singl_post = get_object_or_404(Post, id=post_id)
-    user_profile = get_object_or_404(User, id=singl_post.author_id)
+    user_profile = singl_post.author
     form = CommentForm()
     all_comments = singl_post.comments.all()
     count_posts = user_profile.posts.all().count()
@@ -60,12 +60,11 @@ def add_comment(request, post_id):
     """Представление страницы создания комментария."""
     # Получите пост
     form = CommentForm(request.POST or None)
-    if request.method == 'POST':
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.author = request.user
-            comment.post_id = post_id
-            comment.save()
+    if form.is_valid():
+        comment = form.save(commit=False)
+        comment.author = request.user
+        comment.post_id = post_id
+        comment.save()
     return redirect('posts:post_detail', post_id=post_id)
 
 
@@ -99,12 +98,11 @@ def post_create(request):
         request.POST or None,
         files=request.FILES or None,
     )
-    if request.method == 'POST':
-        if form.is_valid():
-            post = form.save(commit=False)
-            post.author = request.user
-            post.save()
-            return redirect('posts:profile', username=post.author)
+    if form.is_valid():
+        post = form.save(commit=False)
+        post.author = request.user
+        post.save()
+        return redirect('posts:profile', username=post.author)
     context = {
         'form': form,
     }
@@ -125,17 +123,14 @@ def profile(request, username):
     """Представление страницы профиля."""
     template = 'posts/profile.html'
     user_profile = get_object_or_404(User, username=username)
+    follower_user = request.user.is_authenticated
+    check_following = Follow.objects.filter(
+        user=follower_user,
+        author=user_profile,
+    )
     following = False
-    if request.user.is_authenticated:
-        follower_user = request.user
-        check_following = Follow.objects.filter(
-            user=follower_user,
-            author=user_profile
-        )
-        if check_following.count() == 0:
-            following = False
-        else:
-            following = True
+    if check_following.exists() and request.user.is_authenticated:
+        following = True
     post_list = user_profile.posts.all()
     count_posts = post_list.count()
     context = {
@@ -155,7 +150,6 @@ def profile_follow(request, username):
     follower_user = request.user
     if author != follower_user:
         Follow.objects.get_or_create(user=follower_user, author=author)
-        return redirect('posts:profile', username=username)
     return redirect('posts:profile', username=username)
 
 

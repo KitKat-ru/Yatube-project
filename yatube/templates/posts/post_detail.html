@@ -4,7 +4,7 @@
 
 {% block title %}
   {{ singl_post }}
-  {% comment %} |truncatechars:30 {% endcomment %}
+
 {% endblock %}
 
 {% block content %}
@@ -23,7 +23,7 @@
             </a>
           {% endif %}
               <li class="list-group-item">
-              Автор: {{ user_profile.get_full_name }}
+              Автор: {{ singl_post.author.get_full_name }}
               </li>
               <li class="list-group-item d-flex justify-content-between align-items-center">
               Всего постов автора:  <span >{{ count_posts }}</span>
@@ -52,44 +52,9 @@
       </article>
 
       {% if user.is_authenticated %}
-        <div class="card my-4">
-          <h5 class="card-header">Добавить комментарий:</h5>
-          <div class="card-body">
-            <form method="post" action="{% url 'posts:add_comment' singl_post.id %}">
-              {% csrf_token %}
-              <div class="form-group mb-2">
-                {{ form.text|addclass:"form-control" }}
-                <small id="id_text-help" class="form-text text-muted">
-                  {{ form.text.help_text }}
-                </small>
-              </div>
-              <button type="submit" class="btn btn-primary">Отправить</button>
-            </form>
-          </div>
-        </div>
+        {% include 'posts/includes/comment_card.html' %} 
       {% endif %}
-
-      {% for comment in all_comments %}
-        <div class="media mb-4">
-          <div class="media-body">
-            <ul>
-              <li>
-                <h5 class="mt-0">
-                  <a href="{% url 'posts:profile' comment.author.username %}">
-                    {{ comment.author.get_full_name }}
-                  </a>
-                </h5>
-              </li>
-              <li>
-                Дата публикации: {{ comment.pub_date|date:"d E Y" }} 
-              </li>
-            </ul>
-            <p>
-              {{ comment.text }}
-            </p>
-            </div>
-          </div>
-      {% endfor %}
+      {% include 'posts/includes/comment_feed.html' %}
     </div>
   </div>
 {% endblock %}
