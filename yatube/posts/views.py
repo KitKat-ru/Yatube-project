@@ -6,8 +6,6 @@ from django.shortcuts import get_object_or_404, redirect, render
 from .forms import CommentForm, PostForm
 from .models import Follow, Group, Post, User
 
-# from django.contrib.auth.decorators import user_passes_test
-
 
 def get_page_context(queryset, request):
     """Пагинация отдельной функцией."""

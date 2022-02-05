@@ -35,7 +35,7 @@ urlpatterns = [
          name='post_create'
          ),
     # Создание комментария
-    path('posts/<int:post_id>/comment',
+    path('posts/<int:post_id>/comment/',
          views.add_comment,
          name='add_comment'
          ),
