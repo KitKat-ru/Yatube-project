@@ -173,7 +173,7 @@ class PostFormTests(TestCase):
             + reverse('posts:update_post', kwargs={'post_id': self.post.id}),
         )
 
-    def test_create_comment_auth_and_redirect_non_auth_and_context(self):
+    def test_create_comment_auth_user_context(self):
         """Валидная форма создает запись в Comment."""
         # Подсчитаем количество записей в Comments
         comment_count = Comment.objects.count()
@@ -198,7 +198,26 @@ class PostFormTests(TestCase):
                              status_code=HTTPStatus.FOUND,
                              target_status_code=HTTPStatus.OK,
                              msg_prefix='', fetch_redirect_response=False)
+        # Проверяем внесенные данные
+        comment_el = Comment.objects.order_by('-id').first()
+        self.assertEqual(comment_el.text, form_data['text'])
+        self.assertEqual(comment_el.author.username, form_data['author'])
+        self.assertEqual(comment_el.post.id, form_data['post'].id)
+        # Проверяем увеличилось ли число комментариев
+        self.assertEqual(Comment.objects.count(), comment_count + 1)
 
+    def test_redirect_non_auth_create_comment(self):
+        """
+        Невалидная форма Comment перенаправляет гостя на страницу авторизации.
+        """
+        # Подсчитаем количество записей в Comments
+        comment_count = Comment.objects.count()
+
+        form_data = {
+            'text': 'Тестовый текст комментария',
+            'author': self.user.username,
+            'post': self.post
+        }
         # Отправляем POST-запрос неавторизованным пользователем
         response_guest = self.guest_client.post(
             reverse('posts:add_comment', kwargs={'post_id': self.post.id}),
@@ -214,10 +233,5 @@ class PostFormTests(TestCase):
                              + reverse(
                                  'posts:add_comment',
                                  kwargs={'post_id': self.post.id}))
-        # Проверяем внесенные данные
-        comment_el = Comment.objects.order_by('-id').first()
-        self.assertEqual(comment_el.text, form_data['text'])
-        self.assertEqual(comment_el.author.username, form_data['author'])
-        self.assertEqual(comment_el.post.id, form_data['post'].id)
         # Проверяем увеличилось ли число комментариев
-        self.assertEqual(Comment.objects.count(), comment_count + 1)
+        self.assertEqual(Comment.objects.count(), comment_count + 0)

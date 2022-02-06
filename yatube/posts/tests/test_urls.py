@@ -1,7 +1,6 @@
 from http import HTTPStatus
 
 from django.contrib.auth import get_user_model
-from django.core.cache import cache
 from django.test import Client, TestCase
 from django.urls import reverse
 from posts.models import Group, Post
@@ -176,43 +175,3 @@ class PostsURLTests(TestCase):
             with self.subTest(url=url):
                 response = self.authorized_client.get(url)
                 self.assertTemplateUsed(response, template)
-
-    def test_cache_index_page(self):
-        """Проверка работы кэша на главной странице."""
-
-        form_data = {
-            'text': 'Тестовый текст 3 поста для проверки кэша',
-            'author': self.user.username,
-            'group': self.group.id,
-        }
-        # Отправляем POST-запрос
-        response = self.authorized_other_client.post(
-            reverse('posts:post_create'),
-            data=form_data,
-            follow=True
-        )
-        # Проверяем отправился ли POST-запрос
-        self.assertEqual(response.status_code, HTTPStatus.OK)
-        # Получаем данные с главной страницы (и кэшируем)
-        response_initial = self.authorized_client.get(reverse('posts:index'))
-        content_initial = response_initial.content
-        # Изменяем данные главной страницы
-        rooting_new_post = Post.objects.order_by('-id').first()
-        rooting_new_post.delete()
-        # Проверяем удаление из ДБ
-        self.assertFalse(Post.objects.filter(
-            text='Тестовый текст 3 поста для проверки кэша'))
-        # Получаем данные из кэша для главной страницы
-        response_modified = self.authorized_client.get(reverse('posts:index'))
-        content_modified = response_modified.content
-        # Проверяем работу кэша. При запросе получены устаревшие данные.
-        self.assertEqual(content_initial, content_modified)
-        # Очищаем кэш
-        cache.clear()
-        # Проверяем несоотвеотствие кэша и новых данных полученных после
-        # очистки.
-        response_new_cached = self.authorized_client.get(
-            reverse('posts:index')
-        )
-        content_new_cached = response_new_cached.content
-        self.assertNotEqual(content_new_cached, content_modified)

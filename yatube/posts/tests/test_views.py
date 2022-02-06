@@ -1,8 +1,10 @@
 import shutil
 import tempfile
 
+from http import HTTPStatus
 from django import forms
 from django.conf import settings
+from django.core.cache import cache
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client, TestCase, override_settings
@@ -224,6 +226,47 @@ class PostPagesTests(TestCase):
         DB_check_over = Follow.objects.all().count()
         # Проверяем удаление записи из БД
         self.assertNotEqual(DB_pre_check + 1, DB_check_over)
+
+
+    def test_cache_index_page(self):
+            """Проверка работы кэша на главной странице."""
+
+            form_data = {
+                'text': 'Тестовый текст 3 поста для проверки кэша',
+                'author': self.user.username,
+                'group': self.group.id,
+            }
+            # Отправляем POST-запрос
+            response = self.authorized_other_client.post(
+                reverse('posts:post_create'),
+                data=form_data,
+                follow=True
+            )
+            # Проверяем отправился ли POST-запрос
+            self.assertEqual(response.status_code, HTTPStatus.OK)
+            # Получаем данные с главной страницы (и кэшируем)
+            response_initial = self.authorized_client.get(reverse('posts:index'))
+            content_initial = response_initial.content
+            # Изменяем данные главной страницы
+            rooting_new_post = Post.objects.order_by('-id').first()
+            rooting_new_post.delete()
+            # Проверяем удаление из ДБ
+            self.assertFalse(Post.objects.filter(
+                text=form_data['text']))
+            # Получаем данные из кэша для главной страницы
+            response_modified = self.authorized_client.get(reverse('posts:index'))
+            content_modified = response_modified.content
+            # Проверяем работу кэша. При запросе получены устаревшие данные.
+            self.assertEqual(content_initial, content_modified)
+            # Очищаем кэш
+            cache.clear()
+            # Проверяем несоотвеотствие кэша и новых данных полученных после
+            # очистки.
+            response_new_cached = self.authorized_client.get(
+                reverse('posts:index')
+            )
+            content_new_cached = response_new_cached.content
+            self.assertNotEqual(content_new_cached, content_modified)
 
 
 class PaginatorViewsTest(TestCase):
