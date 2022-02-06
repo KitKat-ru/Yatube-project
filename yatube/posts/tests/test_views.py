@@ -26,12 +26,16 @@ class PostPagesTests(TestCase):
         cls.guest_client = Client()
         cls.user = User.objects.create(username='auth_test')
         cls.other_user = User.objects.create(username='other_auth_test')
+        cls.user_test_follow = User.objects.create(username='auth_test_follow')
 
         cls.authorized_client = Client()
         cls.authorized_client.force_login(cls.user)
 
         cls.authorized_other_client = Client()
         cls.authorized_other_client.force_login(cls.other_user)
+
+        cls.authorized_client_test_follow = Client()
+        cls.authorized_client_test_follow.force_login(cls.user_test_follow)
 
         small_gif = (
             b'\x47\x49\x46\x38\x39\x61\x02\x00'
@@ -184,13 +188,55 @@ class PostPagesTests(TestCase):
         no_first_object_detail = response.context['page_obj']
         self.assertNotIn(self.post, no_first_object_detail)
 
-    def test_follow_index_auth_user(self):
-        """В контексте подписчика follow_index появился пост автора. """
+    def test_following_author(self):
+        """Проверка подписки на автора. """
         author = self.user
         follower = self.other_user
-        Follow.objects.create(user=follower, author=author)
+        # Подсчитываем количество подписок
+        DB_pre_check_count = Follow.objects.all().count()
+        # Создаем подписку через запрос
+        response = self.authorized_other_client.post(reverse(
+            'posts:profile_follow', kwargs={'username': self.post.author}))
+        self.assertEqual(response.status_code, HTTPStatus.FOUND)
+        # Подсчитываем количество подписок после создания новой
+        DB_check_count = Follow.objects.all().count()
+        self.assertEqual(DB_check_count, DB_pre_check_count + 1)
+        # Проверяем наличие подписки в базе
+        rooting_follow_obj = Follow.objects.get(author=author, user=follower)
+        self.assertEqual(rooting_follow_obj.author, author)
+        self.assertEqual(rooting_follow_obj.user, follower)
 
-        # Создаем контекст follow_index для подписанного юзера
+    def test_unfollowing_author(self):
+        """Проверка отписки на автора. """
+        author = self.user
+        follower = self.other_user
+        # Создаем подписку через ORM
+        Follow.objects.create(user=follower, author=author)
+        # Подсчитываем количество подписок
+        DB_pre_check_count = Follow.objects.all().count()
+        # Отписываемся от автора
+        response = self.authorized_other_client.get(reverse(
+            'posts:profile_unfollow', kwargs={'username': self.post.author}))
+        self.assertEqual(response.status_code, HTTPStatus.FOUND)
+        # Подсчитываем количество подписок после отписки
+        DB_check_count = Follow.objects.all().count()
+        self.assertEqual(DB_check_count, DB_pre_check_count - 1)
+        # Проверяем, что в базе нет подписки с таким автором и подписчиком
+        self.assertFalse(Follow.objects.filter(author=author, user=follower))
+
+    def test_follow_index_auth_and_follow_user(self):
+        """В контексте подписчика follow_index появился пост автора. """
+        # Создаем изолированный тестовый пост
+        post_test_follow = Post.objects.create(
+            text='Тестовый текст для тестирования follow_index',
+            author=self.user_test_follow,
+            group=self.group,
+        )
+        author = self.user_test_follow
+        follower = self.other_user
+        # Создаем подписку через ORM
+        Follow.objects.create(user=follower, author=author)
+        # Создаем контекст follow_index для подписанного пользователя
         response_follower = self.authorized_other_client.get(
             reverse('posts:follow_index')
         )
@@ -198,75 +244,74 @@ class PostPagesTests(TestCase):
         task_pk_0 = follow_obj.pk
         task_text_0 = follow_obj.text
         # Проверяем наличие постов в ленте подписок
-        self.assertEqual(task_pk_0, self.post.pk)
-        self.assertEqual(task_text_0, self.post.text)
+        self.assertEqual(task_pk_0, post_test_follow.pk)
+        self.assertEqual(task_text_0, post_test_follow.text)
         # Проверяем количество постов переданных на страницу follow_index
         self.assertEqual(len(response_follower.context['page_obj']), 1)
 
-        # Создаем контекст follow_index для неподписанного юзера
-        # В данном тесте неподписанным юзером является сам автор,
-        # дополнительная проверка на исключение самоподписки
-        response_author_user = self.authorized_client.get(
+    def test_follow_index_auth_user_non_follow_author(self):
+        """
+        В контексте неподписанного пользователя follow_index не появился пост
+        автора.
+        """
+        # Создаем изолированный тестовый пост
+        Post.objects.create(
+            text='Тестовый текст для тестирования follow_index',
+            author=self.user_test_follow,
+            group=self.group,
+        )
+        author = self.user_test_follow
+        follower = self.other_user
+        # Создаем подписку на user_test_follow для other_user (через ORM)
+        Follow.objects.create(user=follower, author=author)
+        # Создаем контекст follow_index для неподписанного пользователя
+        # self.user зарегистрирован под клиентом authorized_client
+        response_non_follower = self.authorized_client.get(
             reverse('posts:follow_index')
         )
-        follow_no_obj = len(response_author_user.context['page_obj'])
+        follow_no_obj = len(response_non_follower.context['page_obj'])
         # Проверяем количество постов переданных на страницу follow_index
         self.assertEqual(follow_no_obj, 0)
 
-    def test_following_and_unfollowing_author(self):
-        """В базе данных создается/удаляется связь follower-following."""
-        DB_pre_check = Follow.objects.all().count()
-        author = self.user
-        follower = self.other_user
-        Follow.objects.create(user=follower, author=author)
-        DB_check = Follow.objects.all().count()
-        # Проверяем добавление записи в БД
-        self.assertEqual(DB_pre_check + 1, DB_check)
-        Follow.objects.filter(user=follower, author=author).delete()
-        DB_check_over = Follow.objects.all().count()
-        # Проверяем удаление записи из БД
-        self.assertNotEqual(DB_pre_check + 1, DB_check_over)
-
-
     def test_cache_index_page(self):
-            """Проверка работы кэша на главной странице."""
+        """Проверка работы кэша на главной странице."""
 
-            form_data = {
-                'text': 'Тестовый текст 3 поста для проверки кэша',
-                'author': self.user.username,
-                'group': self.group.id,
-            }
-            # Отправляем POST-запрос
-            response = self.authorized_other_client.post(
-                reverse('posts:post_create'),
-                data=form_data,
-                follow=True
-            )
-            # Проверяем отправился ли POST-запрос
-            self.assertEqual(response.status_code, HTTPStatus.OK)
-            # Получаем данные с главной страницы (и кэшируем)
-            response_initial = self.authorized_client.get(reverse('posts:index'))
-            content_initial = response_initial.content
-            # Изменяем данные главной страницы
-            rooting_new_post = Post.objects.order_by('-id').first()
-            rooting_new_post.delete()
-            # Проверяем удаление из ДБ
-            self.assertFalse(Post.objects.filter(
-                text=form_data['text']))
-            # Получаем данные из кэша для главной страницы
-            response_modified = self.authorized_client.get(reverse('posts:index'))
-            content_modified = response_modified.content
-            # Проверяем работу кэша. При запросе получены устаревшие данные.
-            self.assertEqual(content_initial, content_modified)
-            # Очищаем кэш
-            cache.clear()
-            # Проверяем несоотвеотствие кэша и новых данных полученных после
-            # очистки.
-            response_new_cached = self.authorized_client.get(
-                reverse('posts:index')
-            )
-            content_new_cached = response_new_cached.content
-            self.assertNotEqual(content_new_cached, content_modified)
+        form_data = {
+            'text': 'Тестовый текст 3 поста для проверки кэша',
+            'author': self.user.username,
+            'group': self.group.id,
+        }
+        # Отправляем POST-запрос
+        response = self.authorized_other_client.post(
+            reverse('posts:post_create'),
+            data=form_data,
+            follow=True
+        )
+        # Проверяем отправился ли POST-запрос
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        # Получаем данные с главной страницы (и кэшируем)
+        response_initial = self.authorized_client.get(reverse('posts:index'))
+        content_initial = response_initial.content
+        # Изменяем данные главной страницы
+        rooting_new_post = Post.objects.order_by('-id').first()
+        rooting_new_post.delete()
+        # Проверяем удаление из ДБ
+        self.assertFalse(Post.objects.filter(
+            text=form_data['text']))
+        # Получаем данные из кэша для главной страницы
+        response_modified = self.authorized_client.get(reverse('posts:index'))
+        content_modified = response_modified.content
+        # Проверяем работу кэша. При запросе получены устаревшие данные.
+        self.assertEqual(content_initial, content_modified)
+        # Очищаем кэш
+        cache.clear()
+        # Проверяем несоотвеотствие кэша и новых данных полученных после
+        # очистки.
+        response_new_cached = self.authorized_client.get(
+            reverse('posts:index')
+        )
+        content_new_cached = response_new_cached.content
+        self.assertNotEqual(content_new_cached, content_modified)
 
 
 class PaginatorViewsTest(TestCase):
