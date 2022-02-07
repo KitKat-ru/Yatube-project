@@ -123,14 +123,10 @@ def profile(request, username):
     """Представление страницы профиля."""
     template = 'posts/profile.html'
     user_profile = get_object_or_404(User, username=username)
-    follower_user = request.user.is_authenticated
-    check_following = Follow.objects.filter(
-        user=follower_user,
+    following = request.user.is_authenticated and Follow.objects.filter(
+        user=request.user,
         author=user_profile,
-    )
-    following = False
-    if check_following.exists() and request.user.is_authenticated:
-        following = True
+    ).exists()
     post_list = user_profile.posts.all()
     count_posts = post_list.count()
     context = {
