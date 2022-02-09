@@ -26,12 +26,24 @@ SECRET_KEY = '2t#vocl4@bip342ibx(duz!ltl$^oh36($eb@+-b+s+!qr^^0p'
 DEBUG = True
 
 ALLOWED_HOSTS: List = [
-    'localhost',
     '127.0.0.1',
-    '[::1]',
-    'testserver',
+    'www.taeray.pythonanywhere.com',
+    'taeray.pythonanywhere.com',
 ]
 
+
+# def show_toolbar(request):
+#     return True
+
+
+# DEBUG_TOOLBAR_CONFIG = {
+#     "SHOW_TOOLBAR_CALLBACK": show_toolbar,
+# }
+
+
+# 'localhost',
+# '[::1]',
+# 'testserver',
 
 # Application definition
 # Определение приложения
@@ -42,13 +54,14 @@ INSTALLED_APPS = [
     'core.apps.CoreConfig',
     'about.apps.AboutConfig',
     'sorl.thumbnail',
+    'debug_toolbar',  #
 
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
+    'django.contrib.staticfiles',  #
 ]
 
 
@@ -57,9 +70,11 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',  #
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
 ]
 
 ROOT_URLCONF = 'yatube.urls'
