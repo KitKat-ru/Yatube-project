@@ -43,4 +43,4 @@ OC Ubuntu 22.04, Python3.9, Django2.2, Pytest, Sorl-thumbnail, CSS3, Bootstrap, 
 ### Запустите проект:
     python3 manage.py runserverо:
 
-Сайт запущен и находится по адресу - [Yatube](http://taeray.sytes.net/)
+Сайт запущен и находится по адресу - [Yatube](http://taeray.sytes.net/). На данный момент лежит т.к. я оформляю все. В ближайшее время заработает)
