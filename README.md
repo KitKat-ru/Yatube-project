@@ -2,10 +2,10 @@
 Сервис для публикации статей и общения с подписчиками.
 
 ## Стек технологий:
-OC Ubuntu 22.04, Python3.9, Django2.2, Pytest, Sorl-thumbnail, CSS3, Bootstrap, HTML5, Gunicorn, Nginx, PostgreSQL.
+OC Ubuntu 22.04, Python3.9, Django2.2, Unittest, Sorl-thumbnail, CSS3, Bootstrap, HTML5, Gunicorn, Nginx, PostgreSQL.
 
 ## Реализация:
-Проект создан на Django по MVT-архитектуре. Размещен на виртуальной машине в Яндекс.Облаке. Сервер запущен через Docker-compose (3 контейнера: django+gunicorn, nginx, psql). Покрыт тестами (использовалась библиотека Pytest).
+Проект создан на Django по MVT-архитектуре. Размещен на виртуальной машине в Яндекс.Облаке. Сервер запущен через Docker-compose (3 контейнера: django+gunicorn, nginx, psql). Покрыт тестами (использовалась библиотека Unittest).
 
 ## Возможности:
 1. Реализована регистрация (из коробки), добавлена функция смены(восстановления) пароля через email.
