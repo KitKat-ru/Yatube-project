@@ -9,32 +9,38 @@ OC Ubuntu 22.04, Python3.9, Django2.2, Pytest, Sorl-thumbnail, CSS3, Bootstrap, 
 
 ## Возможности:
 1. Реализована регистрация (из коробки), добавлена функция смены(восстановления) пароля через email.
-2. Настроена панель администратора (роли: user, admin)
+2. Настроена панель администратора (роли: user, admin).
 3. Авторизованные пользователи могут вести свой блог, присоединяться к группам и добавлять изображения. Кроме того могут подписываться на других блогеров и комментировать их посты. Неавторизованные пользователи могут только просматривать контент.
 
 ## Установка:
 
 ### Клонируйте репозиторий:
 
-    git clone https://github.com/mark-rom/api_yamdb.git
+    git clone git@github.com:KitKat-ru/Yatube-project.git
 
 ### Перейдите в репозиторий в командной строке:
-    cd api_yamdb
+    cd Yatube-project
   
 ### Создайте и активируйте виртуальное окружение:
-    python3.9 -m venv env`
-для Mac OS
+    python3.9 -m venv env
+#### для Mac OS/Linux:
     source env/bin/activate
-для Windows OS 
+#### для Windows OS:
     source venv/Scripts/activate
   
 ### Установите зависимости из файла requirements.txt:
-Обновите pip:
+#### Обновите пакеты:
     python3 -m pip install --upgrade pip
-Установите зависимости:
+#### Установите зависимости: 
     pip install -r requirements.txt
+
+## При необходимости
+### Создайте миграции:
+    python3 manage.py makemigrations
+### Примените миграции:
+    python3 manage.py migrate
   
 ### Запустите проект:
     python3 manage.py runserverо:
 
-[![CI](https://github.com/yandex-praktikum/hw05_final/actions/workflows/python-app.yml/badge.svg?branch=master)](https://github.com/yandex-praktikum/hw05_final/actions/workflows/python-app.yml)
+Сайт запущен и находится по адресу - [Yatube](http://taeray.sytes.net/)
