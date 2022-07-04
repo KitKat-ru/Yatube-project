@@ -43,4 +43,12 @@ OC Ubuntu 22.04, Python3.9, Django2.2, Unittest, Sorl-thumbnail, CSS3, Bootstrap
 ### Запустите проект:
     python3 manage.py runserverо:
 
-Сайт находится по адресу - [Yatube](http://taeray.sytes.net/).
+Сайт находится по адресу - [Yatube](http://taeray.sytes.net/)
+
+# Авторы:
+- Фабриков Артем (GitHub: https://github.com/KitKat-ru/)
+
+# Лицензия
+Этот проект лицензируется в соответствии с лицензией MIT
+
+![](https://miro.medium.com/max/156/1*A0rVKDO9tEFamc-Gqt7oEA.png "1")
