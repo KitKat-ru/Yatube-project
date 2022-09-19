@@ -41,7 +41,7 @@ OC Ubuntu 22.04, Python3.9, Django2.2, Unittest, Sorl-thumbnail, CSS3, Bootstrap
     python3 manage.py migrate
   
 ### Запустите проект:
-    python3 manage.py runserverо:
+    python3 manage.py runserver:
 
 Сайт находится по адресу - [Yatube](http://taeray.sytes.net/)
 
