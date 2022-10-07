@@ -20,16 +20,15 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '2t#vocl4@bip342ibx(duz!ltl$^oh36($eb@+-b+s+!qr^^0p'
+
+
+SECRET_KEY = os.getenv('SECRET_KEY', default='SUP3R-S3CR3T-K3Y-F0R-MY-PR0J3CT')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+#DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS: List = [
-    '127.0.0.1',
-    'www.taeray.pythonanywhere.com',
-    'taeray.pythonanywhere.com',
-]
+ALLOWED_HOSTS = ['*']
 
 
 # def show_toolbar(request):
@@ -82,15 +81,21 @@ ROOT_URLCONF = 'yatube.urls'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
+# Указываем путь для статичных файлов и css
+STATIC_URL = '/backend_static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'backend_static')
+#STATICFILES_DIRS = [BASE_DIR +  '/yatube/static/']
+# Указываем путь для статичных файлов и css
+#STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
+
 # Указываем путь для картинок
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# Указываем путь для шаблонов
-TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
 
-# Указываем путь для статичных файлов и css
-STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
+# Указываем путь для шаблонов
+
+TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
 
 TEMPLATES = [
     {
@@ -116,13 +121,22 @@ WSGI_APPLICATION = 'yatube.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.sqlite3',
+#        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#    }
+#}
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': os.getenv('DB_ENGINE', default='django.db.backends.postgresql'),
+        'NAME': os.getenv('DB_NAME', default='postgres'),
+        'USER': os.getenv('POSTGRES_USER', default='postgres'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', default='postgres'),
+        'HOST': os.getenv('DB_HOST', default='db'),
+        'PORT': os.getenv('DB_PORT', default=5432)
     }
 }
-
 # почтовый сервер filebased.EmailBackend
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 # указываем директорию, в которую будут складываться файлы писем
@@ -171,8 +185,6 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
-
-STATIC_URL = '/static/'
 
 LOGIN_URL = '/auth/login/'
 LOGIN_REDIRECT_URL = 'posts:index'
