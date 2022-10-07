@@ -1,5 +1,8 @@
-# Yatube
-Сервис для публикации статей и общения с подписчиками.
+<h1 align="center">Привет, меня зовут <a href="https://t.me/Taeray" target="_blank">Артем</a> 
+<img src="https://github.com/blackcater/blackcater/raw/main/images/Hi.gif" height="32"/></h1>
+<h3 align="center">Начинающий Python Developer</h3>
+<h3 align="center">Yatube - Сервис для публикации статей и общения с подписчиками.</h3>
+
 
 ## Стек технологий:
 OC Ubuntu 22.04, Python3.9, Django2.2, Unittest, Sorl-thumbnail, CSS3, Bootstrap, HTML5, Gunicorn, Nginx, PostgreSQL.
