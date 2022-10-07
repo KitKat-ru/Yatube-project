@@ -3,6 +3,13 @@
 <h3 align="center">Начинающий Python Developer</h3>
 <h3 align="center">Yatube - Сервис для публикации статей и общения с подписчиками.</h3>
 
+#
+#
+#
+
+
+## Пример сайта находится по [адресу](http://84.201.160.195/)
+
 
 ## Стек технологий:
 OC Ubuntu 22.04, Python3.9, Django2.2, Unittest, Sorl-thumbnail, CSS3, Bootstrap, HTML5, Gunicorn, Nginx, PostgreSQL.
@@ -45,8 +52,6 @@ OC Ubuntu 22.04, Python3.9, Django2.2, Unittest, Sorl-thumbnail, CSS3, Bootstrap
 
 ### Запустите файл `docker-compose.yml` командой:
     sudo docker-compose up -d --build
-
-### Сайт находится по адресу - [Yatube](http://84.201.160.195/)
 
 ### Для проверки панели администратора введите
 
