@@ -14,36 +14,40 @@ OC Ubuntu 22.04, Python3.9, Django2.2, Unittest, Sorl-thumbnail, CSS3, Bootstrap
 
 ## Установка:
 
-### Клонируйте репозиторий:
+### На хост-сервере клонируйте репозиторий:
 
     git clone git@github.com:KitKat-ru/Yatube-project.git
 
-### Перейдите в репозиторий в командной строке:
-    cd Yatube-project
-  
-### Создайте и активируйте виртуальное окружение:
-    python3.9 -m venv env
-#### для Mac OS/Linux:
-    source env/bin/activate
-#### для Windows OS:
-    source venv/Scripts/activate
-  
-### Установите зависимости из файла requirements.txt:
-#### Обновите пакеты:
-    python3 -m pip install --upgrade pip
-#### Установите зависимости: 
-    pip install -r requirements.txt
+### Перейдите в папку `infra` для этого введите в командной строке:
+    cd Yatube-project/infra
 
-## При необходимости
-### Создайте миграции:
-    python3 manage.py makemigrations
-### Примените миграции:
-    python3 manage.py migrate
-  
-### Запустите проект:
-    python3 manage.py runserver:
+### Пример файла `.env`. Должен находится в папке `./Yatube-project/infra/`: ###
 
-Сайт находится по адресу - [Yatube](http://taeray.sytes.net/)
+    SECRET_KEY=... (ключ к Джанго проекту)
+    DB_ENGINE=django.db.backends.postgresql (указываем, что работаем с postgresql)
+    DB_NAME=postgres (имя базы данных)
+    POSTGRES_USER=... (логин для подключения к базе данных)
+    POSTGRES_PASSWORD=... (пароль для подключения к БД (установите свой)
+    DB_HOST=db (название сервиса (контейнера)
+    DB_PORT=5432 (порт для подключения к БД)
+
+### Подготовьте ВМ. Остановите службу nginx. Установите - [Docker и Docker-compose](https://docs.docker.com/engine/install/ubuntu/): ###
+
+    sudo apt update && sudo apt upgrade -y
+    sudo systemctl stop nginx
+    sudo apt install curl
+    curl -fsSL https://get.docker.com -o get-docker.sh
+    sh get-docker.sh
+    sudo apt install docker-ce docker-compose -y
+
+### Запустите файл `docker-compose.yml` командой:
+    sudo docker-compose up -d --build
+
+### Сайт находится по адресу - [Yatube](http://84.201.160.195/)
+
+### Для проверки панели администратора введите
+
+    sudo docker-compose exec web python manage.py createsuperuser
 
 # Авторы:
 - Фабриков Артем (GitHub: https://github.com/KitKat-ru/)
