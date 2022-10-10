@@ -32,8 +32,10 @@ services:
       - "80:80"
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
-      - backend_static:/var/html/backend_static/
-      - media:/var/html/media/
+#      - backend_static:/var/html/backend_static/
+      - backend_static:/app/backend_static/
+#      - media:/var/html/media/
+      - media:/app/media/
 
     depends_on:
       - web
