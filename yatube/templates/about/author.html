@@ -2,26 +2,60 @@
 {% block title %}Об авторе проекта{% endblock %}
 {% block content %}
 <div class="container py-5">
-  <h1>Привет, меня зовут Артем, я Python-разработчик</h1>
+  <h1>Привет, меня зовут Артем, я Python-разработчик. Стек технологий:</h1>
   <br>
-  <h3>Стек технологий: Python, Django Framework, DRF, PostgreSQL, Unittest, Git, Docker, Docker-compose, Git Actions(workflows).</h3>
+  <aside class="col-12 col-md-3">
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">
+        Python, Django Framework, DRF, PostgreSQL
+      </li>
+      <li class="list-group-item">
+        Unittest, Git, Docker, Docker-compose, Git Actions(workflows)
+      </li>
+    </ul>
+  </aside>
   <br>
-  <h3><strong><center>В этом разделе я познакомлю Вас с моим портфолио<center><strong></h3>
+  <h3><strong><center>В этом разделе я познакомлю Вас с моим портфолио:<center><strong></h3>
   <p align=justify>
     <ol>
-      <li align=justify>Дипломный проект - Foodgram, онлайн-сервис для публикации кулинарных рецептов. Бэкенд реализован на REST API (DRF) по Redoc для готового фронтенда на JS (с использованием lib React). Все задеплоено на ВМ (Yandex Cloud, ОС Ubuntu 20.04) с помощью Git Actions. Docker-compose состоит из 5 контейнеров: Django+Gunicorn, Nginx, PostgreSQL, Certbot и готового фронтенда. Стек технологий - Python3.10, Django3.2, Docker, Gunicorn, Nginx, PostgreSQL.</li>
-      <br><a href="https://github.com/KitKat-ru/foodgram-project-react">Ссылка на репозиторий github</a>
-      <br><a href="https://food-ts.ddns.net/">Foodgram(можно даже создать свой рецепт!)</a>
+      <li align=justify>
+        Дипломный проект - Foodgram, онлайн-сервис для публикации кулинарных рецептов. 
+        Бэкенд реализован на REST API (DRF) по Redoc для готового фронтенда на JS (с использованием lib React). 
+        Все задеплоено на ВМ (Yandex Cloud, ОС Ubuntu 20.04) с помощью Git Actions. 
+        Docker-compose состоит из 5 контейнеров: Django+Gunicorn, Nginx, PostgreSQL, Certbot и готового фронтенда. 
+        Стек технологий - Python3.10, Django3.2, Docker, Gunicorn, Nginx, PostgreSQL.
+      </li>
+      <a href="https://github.com/KitKat-ru/foodgram-project-react">Ссылка на репозиторий github</a>
+      <a href="https://food-ts.ddns.net/">Foodgram(можно даже создать свой рецепт!)</a>
       <br>
-      <li align=justify>Pet- проект - TelegramBot, классический бот в мессенджере Telegram. Стек технологий - Python3.9, Django2.2, Python-telegram-bot13.7, Yandex Cloud, Docker, Logging. Реализована передача информации о времени суток по UTC, IP-adress пользователя, случайное фото кота, случайное число, индивидуальное меню. Проект размещен на виртуальной машине, в Docker-контейнере, настроено логирование в отдельный файл.</li>
-      <br><a href="https://github.com/KitKat-ru/telegram-bot-pet-project">Ссылка на репозиторий github</a>
+      <li align=justify>
+        Pet- проект - TelegramBot, классический бот в мессенджере Telegram. 
+        Стек технологий - Python3.9, Django2.2, Python-telegram-bot13.7, Yandex Cloud, Docker, Logging. 
+        Реализована передача информации о времени суток по UTC, IP-adress пользователя, случайное фото кота, 
+        случайное число, индивидуальное меню. Проект размещен на виртуальной машине, в Docker-контейнере, 
+        настроено логирование в отдельный файл.
+      </li>
+      <a href="https://github.com/KitKat-ru/telegram-bot-pet-project">Ссылка на репозиторий github</a>
       <br>
-      <li align=justify>Проект - Yatube, сервис для публикации статей с возможностью подписки и комментирования на MVT архитектуре. Стек технологий - Python3.9, Django2.2, Unittest, Sorl-thumbnail, CSS (Bootstrap), HTML5. Реализован на виртуальной машине (Yandex Cloud, ОС Ubuntu 20.04, Docker-compose - PostgreSQL, Django+Gunicorn, Nginx), настроен мониторинг через UptimeRobot и Sentry. База данных - PostgreSQL. Проект покрыт тестами, реализована стандартная регистрация (добавлена функция восстановления пароля через электронную почту), настроена пагинация и кэширование.</li>
-      <br><a href="https://github.com/KitKat-ru/Yatube-project">Ссылка на репозиторий github</a>
-      <br><a href="http://84.201.160.195/">Yatube(а тут можно вести блог!)</a>
+      <li align=justify>
+        Проект - Yatube, сервис для публикации статей с возможностью подписки и комментирования на MVT 
+        архитектуре. Стек технологий - Python3.9, Django2.2, Unittest, Sorl-thumbnail, CSS (Bootstrap), HTML5. 
+        Реализован на виртуальной машине (Yandex Cloud, ОС Ubuntu 20.04, Docker-compose - PostgreSQL, 
+        Django+Gunicorn, Nginx), настроен мониторинг через UptimeRobot и Sentry. База данных - PostgreSQL. 
+        Проект покрыт тестами, реализована стандартная регистрация (добавлена функция восстановления пароля через 
+        электронную почту), настроена пагинация и кэширование.
+      </li>
+      <a href="https://github.com/KitKat-ru/Yatube-project">Ссылка на репозиторий github</a>
+      <a href="http://84.201.160.195/">Yatube(а тут можно вести блог!)</a>
       <br>
-      <li align=justify>Групповой проект - REST API YaMDB. Стек технологий - Python3.9, Django2.2, DRF3.12, SimpleJWT5.1, Redoc.Сервис предоставляющий доступ к чтению или изменению информации по определенному URL. В рамках совместной работы создавал модель юзера, отвечал за регистрацию и аутентификацию пользователей. В проекте я реализовал регистрацию по электронной почте и имени. Зарегистрированный пользователь авторизовывался (jwt-token) при отправке на специальный URL логина и кода.</li>
-      <br><a href="https://github.com/KitKat-ru/api_yamdb">Ссылка на репозиторий github</a>
+      <li align=justify>
+        Групповой проект - REST API YaMDB. Стек технологий - Python3.9, Django2.2, DRF3.12, 
+        SimpleJWT5.1, Redoc.Сервис предоставляющий доступ к чтению или изменению информации по определенному URL. 
+        В рамках совместной работы создавал модель юзера, отвечал за регистрацию и аутентификацию пользователей. 
+        В проекте я реализовал регистрацию по электронной почте и имени. Зарегистрированный пользователь 
+        авторизовывался (jwt-token) при отправке на специальный URL логина и кода.
+      </li>
+      <a href="https://github.com/KitKat-ru/api_yamdb">Ссылка на репозиторий github</a>
     </ol>
   </p>
 
